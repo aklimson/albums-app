@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Music Albums</title>
+    </head>
+    <body>
+        <h1>Albums</h1>
+        <table id="albums-table" border="1"">
+        <tr>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Year</th>
+        </tr>
+        </table>
+
+        <script>
+            fetch('/api/albums')
+            .then(res => res.json())
+            .then(data => {
+                const table = document.getElementById('albums-table');
+                data.forEach(album => {
+                    const row = table.insertRow();
+                    row.innerHTML = `<td>${album.title}</td><td>${album.artist}</td><td>${album.year}</td>`;
+                });
+            });
+        </script>
+
+    </body>
+</html>
