@@ -1,36 +1,26 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const path = require('path');
-const Album = require('./models/album');
 const connectDB = require('./config/db');
-const album = require('./models/album');
+
+const albumRoutes = require('./routes/albumRoutes');
 
 dotenv.config();
 connectDB();
 
 const app = express();
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')))
 
-app.get('/', async (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'))
-})
+// Serve static files (HTML, CSS, etc.)
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.get('/api/albums', async function (req, res) {
-    const albums = await Album.find()
-    res.json(albums)
-})
+// Homepage
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
-app.post('/api/albums', async function (req, res) {
-    const {title, artist, year} = req.body
-    const newAlbum = new Album ( {
-        title: title,
-        artist: artist,
-        year: year
-    })
-    await newAlbum.save()
-    res.json(newAlbum)
-})
+// Album API routes (mounted at /api/albums)
+app.use('/api/albums', albumRoutes);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`The web app is on http://localhost:${PORT}`));
